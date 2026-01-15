@@ -51,7 +51,7 @@ jobs:
 
       # ✅ PATH BENAR: hanya "quiz-pengupil-main"
       - name: Import database dump
-        working-directory: quiz-pengupil-main
+        working-directory: quiz-pengupil-main/quiz-pengupil-main
         run: |
           mysql -h 127.0.0.1 -u root quiz_pengupil < db/quiz_pengupil.sql
 
