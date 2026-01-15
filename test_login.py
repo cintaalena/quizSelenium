@@ -101,6 +101,8 @@ def fill_login_form(driver, username, password):
     driver.find_element(By.ID, "InputPassword").clear()
     driver.find_element(By.ID, "InputPassword").send_keys(password)
 
+
+def submit_login(driver):
     driver.find_element(By.NAME, "submit").click()
 
 

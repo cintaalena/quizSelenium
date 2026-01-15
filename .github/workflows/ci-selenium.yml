@@ -70,9 +70,9 @@ jobs:
 
       - name: Insert test user into database
         run: |
-          # Generate bcrypt hash for 'pass123' using PHP
+          # Generate bcrypt hash for 'pass123' using PHP and insert if not exists
           PASS_HASH=$(php -r "echo password_hash('pass123', PASSWORD_DEFAULT);")
-          mysql -h 127.0.0.1 -u root quiz_pengupil -e "INSERT INTO users (name, username, email, password) VALUES ('Test User', 'user01', 'user01@test.com', '$PASS_HASH');"
+          mysql -h 127.0.0.1 -u root quiz_pengupil -e "INSERT IGNORE INTO users (name, username, email, password) VALUES ('Test User', 'user01', 'user01@test.com', '$PASS_HASH');"
 
       - name: Update koneksi.php for CI
         run: |
