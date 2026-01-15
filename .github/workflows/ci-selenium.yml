@@ -60,14 +60,12 @@ jobs:
           pip install -r requirements.txt
 
       - name: Start PHP server
-        working-directory: quiz-pengupil-main
         run: |
           php -S 127.0.0.1:8000 > /tmp/php-server.log 2>&1 &
           sleep 2
           curl -I http://127.0.0.1:8000/login.php
 
       - name: Run tests
-        working-directory: quiz-pengupil-main
         env:
           BASE_URL: http://127.0.0.1:8000
           HEADLESS: "1"
