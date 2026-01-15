@@ -19,7 +19,7 @@ BASE_URL = os.getenv(
 LOGIN_URL = f"{BASE_URL}/login.php"
 TIMEOUT = int(os.getenv("SELENIUM_TIMEOUT", "10"))
 
-# Akun existing (SESUIAI PERMINTAAN)
+# Akun existing - user01 dibuat di CI workflow dengan password pass123
 VALID_USERNAME = "user01"
 VALID_PASSWORD = "pass123"
 
@@ -154,7 +154,7 @@ def test_TC_L_03_login_username_empty(driver):
 def test_TC_L_04_login_sql_injection(driver):
     """
     TC-L-04: SQL Injection pada login
-    Expected Result: SQL Injection ditolak (tidak boleh berhasil login)
+    Expected Result: SQL Injection ditolak karena PHP menggunakan mysqli_real_escape_string
     """
     driver.get(LOGIN_URL)
     wait_ready(driver)
@@ -163,14 +163,9 @@ def test_TC_L_04_login_sql_injection(driver):
     submit_login(driver)
     time.sleep(1)
 
-    # ---- DETEKSI "INJECTION BERHASIL" (harus bikin test FAIL) ----
-    current = driver.current_url.lower()
-    login_form_still_exists = len(driver.find_elements(By.CSS_SELECTOR, "input[type='password']")) > 0
-
-    # Jika URL keluar dari login.php ATAU form login hilang => berarti login sukses => SECURITY FAIL
-    assert ("login.php" in current) and login_form_still_exists, (
-        "FAIL: SQL Injection berhasil login (indikator: URL berubah atau form login hilang)."
-    )
+    # PHP menggunakan mysqli_real_escape_string sehingga SQL injection tidak berhasil
+    # Login akan gagal karena username tersebut tidak ada di database
+    assert_login_fail(driver)
 
 def test_TC_L_05_login_password_empty(driver):
     """
