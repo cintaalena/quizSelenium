@@ -102,8 +102,6 @@ def fill_register_form(driver, nama, email, username, password, repassword):
     driver.find_element(By.ID, "InputRePassword").clear()
     driver.find_element(By.ID, "InputRePassword").send_keys(repassword)
 
-    driver.find_element(By.NAME, "submit").click()
-
 
 
 def submit_register(driver):

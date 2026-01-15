@@ -31,7 +31,7 @@ if( isset($_POST['submit']) ){
             if($password == $repass){
                 if( cek_nama($name,$con) == 0 ){
                     $pass  = password_hash($password, PASSWORD_DEFAULT);
-                    $query = "INSERT INTO users (username,name,email, password ) VALUES ('$username','$nama','$email','$pass')";
+                    $query = "INSERT INTO users (username,name,email, password ) VALUES ('$username','$name','$email','$pass')";
                     $result   = mysqli_query($con, $query);
                     if ($result) {
                         $_SESSION['username'] = $username;                       
