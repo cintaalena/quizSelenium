@@ -84,31 +84,25 @@ def find_first_existing(driver, candidates):
 
 
 def fill_register_form(driver, nama, email, username, password, repassword):
-    # ambil SEMUA input yang terlihat di halaman
-    inputs = WebDriverWait(driver, 10).until(
-        lambda d: [i for i in d.find_elements(By.TAG_NAME, "input") if i.is_displayed()]
-    )
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.ID, "username"))
+    ).clear()
+    driver.find_element(By.ID, "username").send_keys(username)
 
-    # DEBUG AMAN (boleh kamu hapus nanti)
-    assert len(inputs) >= 5, f"Expected >=5 inputs, found {len(inputs)}"
+    driver.find_element(By.ID, "name").clear()
+    driver.find_element(By.ID, "name").send_keys(nama)
 
-    inputs[0].clear()
-    inputs[0].send_keys(nama)
+    driver.find_element(By.ID, "InputEmail").clear()
+    driver.find_element(By.ID, "InputEmail").send_keys(email)
 
-    inputs[1].clear()
-    inputs[1].send_keys(email)
+    driver.find_element(By.ID, "InputPassword").clear()
+    driver.find_element(By.ID, "InputPassword").send_keys(password)
 
-    inputs[2].clear()
-    inputs[2].send_keys(username)
+    driver.find_element(By.ID, "InputRePassword").clear()
+    driver.find_element(By.ID, "InputRePassword").send_keys(repassword)
 
-    inputs[3].clear()
-    inputs[3].send_keys(password)
+    driver.find_element(By.NAME, "submit").click()
 
-    inputs[4].clear()
-    inputs[4].send_keys(repassword)
-
-    # submit: klik button manapun yang terlihat
-    driver.find_element(By.XPATH, "//button|//input[@type='submit']").click()
 
 
 def submit_register(driver):
