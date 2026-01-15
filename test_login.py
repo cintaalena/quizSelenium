@@ -92,28 +92,18 @@ def find_first_existing(driver, candidates):
 
 
 def fill_login_form(driver, username, password):
-    user_el = find_first_existing(driver, [
-        (By.NAME, "username"),
-        (By.ID, "username"),
-        (By.NAME, "user"),
-        (By.ID, "user"),
-        (By.CSS_SELECTOR, "input[type='text']"),
-        (By.CSS_SELECTOR, "input[type='email']"),
-    ])
-    pass_el = find_first_existing(driver, [
-        (By.NAME, "password"),
-        (By.ID, "password"),
-        (By.NAME, "pass"),
-        (By.ID, "pass"),
-        (By.CSS_SELECTOR, "input[type='password']"),
-    ])
+    inputs = driver.find_elements(By.CSS_SELECTOR, "form input")
 
-    user_el.clear()
-    user_el.send_keys(username)
+    inputs[0].clear()
+    inputs[0].send_keys(username)
 
-    pass_el.clear()
-    pass_el.send_keys(password)
+    inputs[1].clear()
+    inputs[1].send_keys(password)
 
+    driver.find_element(
+        By.CSS_SELECTOR,
+        "form button, form input[type='submit']"
+    ).click()
 
 def submit_login(driver):
     btn = find_first_existing(driver, [

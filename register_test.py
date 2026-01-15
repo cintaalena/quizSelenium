@@ -84,58 +84,27 @@ def find_first_existing(driver, candidates):
 
 
 def fill_register_form(driver, nama, email, username, password, repassword):
-    """
-    Mengisi form register sesuai field pada UI:
-    Nama, Alamat Email, Username, Password, Re-Password
-    """
-    nama_el = find_first_existing(driver, [
-        (By.NAME, "nama"),
-        (By.ID, "nama"),
-        (By.NAME, "name"),
-        (By.ID, "name"),
-        # fallback: input text pertama
-        (By.XPATH, "(//input[@type='text'])[1]"),
-    ])
-    email_el = find_first_existing(driver, [
-        (By.NAME, "email"),
-        (By.ID, "email"),
-        (By.XPATH, "//input[@type='email']"),
-        # fallback: input text kedua jika email dibuat text biasa
-        (By.XPATH, "(//input[@type='text'])[2]"),
-    ])
-    username_el = find_first_existing(driver, [
-        (By.NAME, "username"),
-        (By.ID, "username"),
-        (By.XPATH, "(//input[@type='text'])[3]"),
-    ])
-    password_el = find_first_existing(driver, [
-        (By.NAME, "password"),
-        (By.ID, "password"),
-        (By.XPATH, "(//input[@type='password'])[1]"),
-    ])
-    repassword_el = find_first_existing(driver, [
-        (By.NAME, "repassword"),
-        (By.ID, "repassword"),
-        (By.NAME, "re_password"),
-        (By.ID, "re_password"),
-        (By.XPATH, "(//input[@type='password'])[2]"),
-    ])
+    inputs = driver.find_elements(By.CSS_SELECTOR, "form input")
 
-    # isi
-    nama_el.clear()
-    nama_el.send_keys(nama)
+    inputs[0].clear()
+    inputs[0].send_keys(nama)
 
-    email_el.clear()
-    email_el.send_keys(email)
+    inputs[1].clear()
+    inputs[1].send_keys(email)
 
-    username_el.clear()
-    username_el.send_keys(username)
+    inputs[2].clear()
+    inputs[2].send_keys(username)
 
-    password_el.clear()
-    password_el.send_keys(password)
+    inputs[3].clear()
+    inputs[3].send_keys(password)
 
-    repassword_el.clear()
-    repassword_el.send_keys(repassword)
+    inputs[4].clear()
+    inputs[4].send_keys(repassword)
+
+    driver.find_element(
+        By.CSS_SELECTOR,
+        "form button, form input[type='submit']"
+    ).click()
 
 
 def submit_register(driver):
