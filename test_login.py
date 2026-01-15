@@ -92,7 +92,11 @@ def find_first_existing(driver, candidates):
 
 
 def fill_login_form(driver, username, password):
-    inputs = driver.find_elements(By.CSS_SELECTOR, "form input")
+    inputs = WebDriverWait(driver, 10).until(
+        lambda d: [i for i in d.find_elements(By.TAG_NAME, "input") if i.is_displayed()]
+    )
+
+    assert len(inputs) >= 2, f"Expected >=2 inputs, found {len(inputs)}"
 
     inputs[0].clear()
     inputs[0].send_keys(username)
@@ -100,19 +104,7 @@ def fill_login_form(driver, username, password):
     inputs[1].clear()
     inputs[1].send_keys(password)
 
-    driver.find_element(
-        By.CSS_SELECTOR,
-        "form button, form input[type='submit']"
-    ).click()
-
-def submit_login(driver):
-    btn = find_first_existing(driver, [
-        (By.CSS_SELECTOR, "button[type='submit']"),
-        (By.CSS_SELECTOR, "input[type='submit']"),
-        (By.XPATH, "//button[contains(., 'Login')]"),
-        (By.XPATH, "//button[contains(., 'Masuk')]"),
-    ])
-    btn.click()
+    driver.find_element(By.XPATH, "//button|//input[@type='submit']").click()
 
 # =========================
 # TESTCASE LOGIN

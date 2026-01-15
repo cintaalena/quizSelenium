@@ -84,7 +84,13 @@ def find_first_existing(driver, candidates):
 
 
 def fill_register_form(driver, nama, email, username, password, repassword):
-    inputs = driver.find_elements(By.CSS_SELECTOR, "form input")
+    # ambil SEMUA input yang terlihat di halaman
+    inputs = WebDriverWait(driver, 10).until(
+        lambda d: [i for i in d.find_elements(By.TAG_NAME, "input") if i.is_displayed()]
+    )
+
+    # DEBUG AMAN (boleh kamu hapus nanti)
+    assert len(inputs) >= 5, f"Expected >=5 inputs, found {len(inputs)}"
 
     inputs[0].clear()
     inputs[0].send_keys(nama)
@@ -101,10 +107,8 @@ def fill_register_form(driver, nama, email, username, password, repassword):
     inputs[4].clear()
     inputs[4].send_keys(repassword)
 
-    driver.find_element(
-        By.CSS_SELECTOR,
-        "form button, form input[type='submit']"
-    ).click()
+    # submit: klik button manapun yang terlihat
+    driver.find_element(By.XPATH, "//button|//input[@type='submit']").click()
 
 
 def submit_register(driver):
