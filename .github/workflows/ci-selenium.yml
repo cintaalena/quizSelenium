@@ -55,7 +55,6 @@ jobs:
           mysql -h 127.0.0.1 -u root quiz_pengupil < db/quiz_pengupil.sql
 
       - name: Install Python dependencies
-        working-directory: quiz-pengupil-main
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
