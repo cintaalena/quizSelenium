@@ -1,0 +1,85 @@
+name: CI - Selenium Pytest (PHP + MySQL)
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_DATABASE: quiz_pengupil
+          MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -u root"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install MySQL client
+        run: sudo apt-get update && sudo apt-get install -y mysql-client
+
+      - name: Wait for MySQL
+        run: |
+          for i in {1..30}; do
+            mysqladmin ping -h 127.0.0.1 -u root && break
+            echo "Waiting MySQL..."
+            sleep 2
+          done
+
+      # ✅ PATH BENAR: hanya "quiz-pengupil-main"
+      - name: Import database dump
+        working-directory: quiz-pengupil-main
+        run: |
+          mysql -h 127.0.0.1 -u root quiz_pengupil < db/quiz_pengupil.sql
+
+      - name: Install Python dependencies
+        working-directory: quiz-pengupil-main
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Start PHP server
+        working-directory: quiz-pengupil-main
+        run: |
+          php -S 127.0.0.1:8000 > /tmp/php-server.log 2>&1 &
+          sleep 2
+          curl -I http://127.0.0.1:8000/login.php
+
+      - name: Run tests
+        working-directory: quiz-pengupil-main
+        env:
+          BASE_URL: http://127.0.0.1:8000
+          HEADLESS: "1"
+          SELENIUM_TIMEOUT: "10"
+        run: |
+          pytest -v
+
+      - name: Upload PHP log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: php-server-log
+          path: /tmp/php-server.log
